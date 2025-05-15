@@ -1,0 +1,34 @@
+server:
+  port: 21101
+#日志
+logging:
+  config: classpath:logback.xml
+
+spring:
+  main:
+    allow-bean-definition-overiding: true
+    web-application-type: none
+  kafka:
+    bootstrap-servers: 134.0.153.213:9092,134.0.153.214:9092,134.0.153.215:9092
+    producer:
+      # 发生错误后，消息重发的次数。
+      retries: 1
+      batch-size: 16384
+      buffer-memory: 33554432
+      # 键的反序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 值的反序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+      acks: 1
+anms:
+  syslog:
+    # 数据处理线程池
+    executor:
+      corePoolSize: 10
+      maxPoolSize: 50
+    kafka:
+      # 发送
+      producer:
+        topics: cnms-syslog-info
+    port: 516

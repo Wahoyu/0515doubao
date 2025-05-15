@@ -1,0 +1,93 @@
+
+#日志
+logging:
+  config: classpath:logback.xml
+
+spring:
+  cache:
+    type: redis
+  datasource:
+    #主数据库连接
+    master:
+      jdbc-url: jdbc:mysql://134.0.153.209:3306/cnms?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+      username: cyw_nms
+      password: Cdo72HVR6mI5NP9s
+      driver-class: com.mysql.cj.jdbc.Driver
+  #从数据库连接
+    slave:
+      driver-class: com.clickhouse.jdbc.ClickHouseDriver
+      enabled: true
+      jdbc-url: jdbc:clickhouse://134.0.153.203:9000/cnms
+      username: cyw_nms_ck
+      password: C9J5JsjaXSA8iMUk
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      max-active: 3
+      initial-size: 1
+      min-idle: 1
+
+  kafka:
+    bootstrap-servers: 134.0.153.213:9092,134.0.153.214:9092,134.0.153.215:9092
+    #,192.168.101.170:9092
+    consumer:
+      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
+      # latest（默认值）在偏移量无效的情况下，消费者将从最新的记录开始读取数据（在消费者启动之后生成的记录）
+      # earliest ：在偏移量无效的情况下，消费者将从起始位置读取分区的记录
+      auto-offset-reset: latest
+      # 每次拉去100条数据
+      max-poll-records: 100
+      # 键的反序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 值的反序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 是否自动提交偏移量，默认值是true,为了避免出现重复数据和数据丢失，可以把它设置为false,然后手动提交偏移量
+      enable-auto-commit: false
+    producer:
+      # 发生错误后，消息重发的次数。
+      retries: 1
+      batch-size: 16384
+      buffer-memory: 33554432
+      # 键的反序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 值的反序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+      acks: 1
+    listener:
+      # 在侦听器容器中运行的线程数。
+      concurrency: 1
+      ack-mode: manual
+anms:
+  syslog:
+    clickhouse:
+      colony: cnms_cluster
+    # 数据处理线程池
+    executor:
+      corePoolSize: 10
+      maxPoolSize: 50
+    kafka:
+      # 资源数据接收
+      consumer:
+        topics: cnms-syslog-info
+        groupId: anms-syslog
+        #告警返回的
+      producer:
+        topics: cnms-task-info
+        #接收到消息后返回的topic
+      producerrep:
+        topics: cnms-syslog-alarm-info
+        clinckTopics: cnms-device-syslog-data
+    sleep: 100
+    cache:
+      deviceCache:
+        timeout: 120
+      deviceIdCache:
+        timeout: 120
+      alarmLevelCache:
+        timeout: 120
+      portCache:
+        timeout: 120
+      syslogRuleCache:
+        timeout: 120
+      syslogTableNameCacheTimeout:
+        timeout: 120

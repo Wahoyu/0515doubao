@@ -1,0 +1,23 @@
+server:
+  port: 22101
+spring:
+  application:
+    # 应用名称
+    name: cnms-syslog-processing
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      #命名空间
+      namespace: cloudsea-dev-cnms
+      discovery:
+        # 服务注册地址
+        server-addr: 192.168.101.167:8848
+        namespace: ${spring.cloud.nacos.namespace}
+      config:
+        # 配置中心地址
+        server-addr: 192.168.101.167:8848
+        namespace: ${spring.cloud.nacos.namespace}
+        # 配置文件格式
+        file-extension: yaml

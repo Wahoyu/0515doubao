@@ -1,0 +1,23 @@
+server:
+  port: 22912
+spring:
+  application:
+    # 应用名称
+    name: anms-data-batch-processing
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      #命名空间
+      namespace: anms-data-server
+      discovery:
+        # 服务注册地址
+        server-addr: 192.168.40.130:8848
+        namespace: ${spring.cloud.nacos.namespace}
+      config:
+        # 配置中心地址
+        server-addr: 192.168.40.130:8848
+        namespace: ${spring.cloud.nacos.namespace}
+        # 配置文件格式
+        file-extension: yaml
